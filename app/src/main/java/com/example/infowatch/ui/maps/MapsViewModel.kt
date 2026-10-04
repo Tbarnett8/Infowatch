@@ -3,17 +3,21 @@ package com.example.infowatch.ui.maps
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.infowatch.data.MapsRepository
+import com.example.infowatch.model.HeroShort
 import com.example.infowatch.model.Map
+import com.example.infowatch.model.MapGamemode
+import com.example.infowatch.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MapsViewModel(
     private val repository: MapsRepository,
 ) : ViewModel() {
 
-    private val _maps = MutableStateFlow<List<Map>>(emptyList())
-    val maps: StateFlow<List<Map>> = _maps
+    private val _uiState = MutableStateFlow<MapsUiState>(MapsUiState.Loading)
+    val uiState: StateFlow<MapsUiState> = _uiState.asStateFlow()
 
     init {
         loadMaps()
@@ -21,11 +25,22 @@ class MapsViewModel(
 
     fun loadMaps() {
         viewModelScope.launch {
+            _uiState.value = MapsUiState.Loading
+
             try {
-                _maps.value = repository.getMaps()
+                val maps = repository.getMaps()
+                _uiState.value = MapsUiState.Success(maps)
             } catch (e: Exception) {
-                e.printStackTrace()
+                _uiState.value = MapsUiState.Error(
+                    message = "Unable to load heroes"
+                )
             }
         }
     }
+}
+
+sealed interface MapsUiState {
+    data object Loading : MapsUiState
+    data class Success(val maps: List<Map>) : MapsUiState
+    data class Error(val message: String) : MapsUiState
 }

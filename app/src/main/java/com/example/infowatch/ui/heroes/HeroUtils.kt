@@ -5,7 +5,6 @@ import com.example.infowatch.model.BackgroundImageSize
 import com.example.infowatch.model.Hero
 import com.example.infowatch.model.HitPoints
 import com.example.infowatch.ui.theme.Armour
-import com.example.infowatch.ui.theme.Orange
 import com.example.infowatch.ui.theme.Shield
 import com.example.infowatch.ui.theme.White
 

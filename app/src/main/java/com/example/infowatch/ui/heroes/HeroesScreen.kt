@@ -91,7 +91,7 @@ fun HeroGrid(
             if (heroesInRole.isNotEmpty()) {
 
                 item(span = { GridItemSpan(maxLineSpan) }) {
-                    RoleHeader(
+                    SectionHeader(
                         role = role.value,
                         modifier = Modifier.padding(8.dp)
                     )
@@ -109,7 +109,7 @@ fun HeroGrid(
 }
 
 @Composable
-fun RoleHeader(
+fun SectionHeader(
     role: String,
     modifier: Modifier = Modifier
 ) {

@@ -24,13 +24,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import com.example.infowatch.model.BackgroundImageSize
 import com.example.infowatch.model.Map
 import com.example.infowatch.model.MapGamemode
-import com.example.infowatch.ui.heroes.RoleHeader
-import com.example.infowatch.ui.heroes.backgroundUrlFor
+import com.example.infowatch.ui.heroes.ErrorMessage
+import com.example.infowatch.ui.heroes.SectionHeader
 import com.example.infowatch.ui.theme.Black
 import com.example.infowatch.ui.theme.White
 import org.koin.androidx.compose.koinViewModel
@@ -41,9 +39,44 @@ fun MapsScreen(
     modifier: Modifier = Modifier,
     viewModel: MapsViewModel = koinViewModel()
 ) {
-    val maps by viewModel.maps.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-    val grouped = maps.groupBy { it.gamemodes.first() }
+    when (val state = uiState) {
+        MapsUiState.Loading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is MapsUiState.Success -> {
+            MapList(
+                maps = state.maps,
+                onMapClick = onMapClick
+            )
+        }
+
+        is MapsUiState.Error -> {
+            ErrorMessage(
+                message = state.message,
+                onRetry = viewModel::loadMaps
+            )
+        }
+    }
+}
+
+
+@Composable
+fun MapList(
+    modifier: Modifier = Modifier,
+    maps: List<Map>,
+    onMapClick: (String) -> Unit
+) {
+    val grouped = maps
+        .filter { it.gamemodes.isNotEmpty() }
+        .groupBy { it.gamemodes.first() }
 
     val modeUiOrder = listOf(
         MapGamemode.hybrid,
@@ -66,7 +99,7 @@ fun MapsScreen(
             if (mapsInMode.isNotEmpty()) {
 
                 item {
-                    RoleHeader(
+                    SectionHeader(
                         role = mode.value,
                         modifier = Modifier.padding(8.dp)
                     )
