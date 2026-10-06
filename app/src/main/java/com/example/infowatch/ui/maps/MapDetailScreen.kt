@@ -1,6 +1,5 @@
 package com.example.infowatch.ui.maps
 
-import android.media.Image
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -46,6 +44,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.example.infowatch.model.Map
+import com.example.infowatch.ui.heroes.ErrorMessage
 import com.example.infowatch.ui.theme.White
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -54,9 +53,43 @@ import org.koin.core.parameter.parametersOf
 fun MapDetailScreen(
     mapKey: String,
     onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: MapDetailViewModel = koinViewModel { parametersOf(mapKey) }
 ) {
-    val map by viewModel.mapDetail.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
+
+    when (val state = uiState) {
+        MapDetailUiState.Loading -> {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+
+        is MapDetailUiState.Success -> {
+            MapDetailContent(
+                map = state.mapDetails,
+                onBackClick = onBackClick,
+            )
+        }
+
+        is MapDetailUiState.Error -> {
+            ErrorMessage(
+                message = state.message,
+                onRetry = viewModel::loadMapDetail
+            )
+        }
+    }
+}
+
+@Composable
+fun MapDetailContent(
+    modifier: Modifier = Modifier,
+    map: Map?,
+    onBackClick: () -> Unit,
+) {
     val scrollState = rememberScrollState()
 
     map?.let {

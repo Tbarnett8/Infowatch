@@ -2,7 +2,7 @@ package com.example.infowatch.ui.heroes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.infowatch.data.HeroesRepository
+import com.example.infowatch.domain.HeroesRepository
 import com.example.infowatch.model.HeroShort
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

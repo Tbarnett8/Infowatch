@@ -2,10 +2,11 @@ package com.example.infowatch.ui.maps
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.infowatch.data.MapsRepository
+import com.example.infowatch.domain.MapsRepository
 import com.example.infowatch.model.Map
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class MapDetailViewModel(
@@ -14,20 +15,31 @@ class MapDetailViewModel(
 ) : ViewModel() {
 
 
-    private val _mapDetail = MutableStateFlow<Map?>(null)
-    val mapDetail: StateFlow<Map?> = _mapDetail
+    private val _uiState = MutableStateFlow<MapDetailUiState>(MapDetailUiState.Loading)
+    val uiState: StateFlow<MapDetailUiState> = _uiState.asStateFlow()
 
     init {
         loadMapDetail()
     }
 
-    private fun loadMapDetail() {
+    fun loadMapDetail() {
         viewModelScope.launch {
+            _uiState.value = MapDetailUiState.Loading
+
             try {
-                _mapDetail.value = repository.getMapByKey(mapKey)
+                val mapDetails = repository.getMapByKey(mapKey)
+                _uiState.value = MapDetailUiState.Success(mapDetails)
             } catch (e: Exception) {
-                e.printStackTrace()
+                _uiState.value = MapDetailUiState.Error(
+                    message = "Unable to load map details"
+                )
             }
         }
     }
+}
+
+sealed interface MapDetailUiState {
+    data object Loading : MapDetailUiState
+    data class Success(val mapDetails: Map?) : MapDetailUiState
+    data class Error(val message: String) : MapDetailUiState
 }

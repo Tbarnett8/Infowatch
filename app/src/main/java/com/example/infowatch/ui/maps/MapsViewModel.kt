@@ -2,11 +2,8 @@ package com.example.infowatch.ui.maps
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.infowatch.data.MapsRepository
-import com.example.infowatch.model.HeroShort
+import com.example.infowatch.domain.MapsRepository
 import com.example.infowatch.model.Map
-import com.example.infowatch.model.MapGamemode
-import com.example.infowatch.navigation.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +29,7 @@ class MapsViewModel(
                 _uiState.value = MapsUiState.Success(maps)
             } catch (e: Exception) {
                 _uiState.value = MapsUiState.Error(
-                    message = "Unable to load heroes"
+                    message = "Unable to load maps"
                 )
             }
         }

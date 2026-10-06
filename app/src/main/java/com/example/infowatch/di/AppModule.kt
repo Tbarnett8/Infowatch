@@ -3,11 +3,10 @@ package com.example.infowatch.di
 import com.example.infowatch.api.HeroesApi
 import com.example.infowatch.api.MapsApi
 import com.example.infowatch.api.infrastructure.ApiClient
-import com.example.infowatch.data.HeroesRepository
-import com.example.infowatch.data.MapsRepository
+import com.example.infowatch.data.HeroesRepositoryImpl
+import com.example.infowatch.data.MapsRepositoryImpl
 import com.example.infowatch.ui.heroes.HeroDetailViewModel
 import com.example.infowatch.ui.heroes.HeroesViewModel
-import com.example.infowatch.ui.maps.MapDetailScreen
 import com.example.infowatch.ui.maps.MapDetailViewModel
 import com.example.infowatch.ui.maps.MapsViewModel
 import okhttp3.OkHttpClient
@@ -32,8 +31,8 @@ val appModule = module {
     single { MapsApi(get()) }
 
     // Repository
-    single { HeroesRepository(get()) }
-    single { MapsRepository(get()) }
+    single { HeroesRepositoryImpl(get()) }
+    single { MapsRepositoryImpl(get()) }
 
     // ViewModel
     viewModelOf(::HeroesViewModel)
