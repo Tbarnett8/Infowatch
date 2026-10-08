@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class MapsViewModel(
     private val repository: MapsRepository,
@@ -27,6 +28,8 @@ class MapsViewModel(
             try {
                 val maps = repository.getMaps()
                 _uiState.value = MapsUiState.Success(maps)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = MapsUiState.Error(
                     message = "Unable to load maps"

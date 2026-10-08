@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class HeroesViewModel(
     private val repository: HeroesRepository,
@@ -27,6 +28,8 @@ class HeroesViewModel(
             try {
                 val heroes = repository.getHeroes()
                 _uiState.value = HeroesUiState.Success(heroes)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = HeroesUiState.Error(
                     message = "Unable to load heroes"

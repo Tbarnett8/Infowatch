@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 class MapDetailViewModel(
     private val repository: MapsRepository,
@@ -29,6 +30,8 @@ class MapDetailViewModel(
             try {
                 val mapDetails = repository.getMapByKey(mapKey)
                 _uiState.value = MapDetailUiState.Success(mapDetails)
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
                 _uiState.value = MapDetailUiState.Error(
                     message = "Unable to load map details"

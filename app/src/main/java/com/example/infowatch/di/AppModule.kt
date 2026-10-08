@@ -5,6 +5,8 @@ import com.example.infowatch.api.MapsApi
 import com.example.infowatch.api.infrastructure.ApiClient
 import com.example.infowatch.data.HeroesRepositoryImpl
 import com.example.infowatch.data.MapsRepositoryImpl
+import com.example.infowatch.domain.HeroesRepository
+import com.example.infowatch.domain.MapsRepository
 import com.example.infowatch.ui.heroes.HeroDetailViewModel
 import com.example.infowatch.ui.heroes.HeroesViewModel
 import com.example.infowatch.ui.maps.MapDetailViewModel
@@ -31,8 +33,8 @@ val appModule = module {
     single { MapsApi(get()) }
 
     // Repository
-    single { HeroesRepositoryImpl(get()) }
-    single { MapsRepositoryImpl(get()) }
+    single<HeroesRepository> { HeroesRepositoryImpl(get()) }
+    single<MapsRepository> { MapsRepositoryImpl(get()) }
 
     // ViewModel
     viewModelOf(::HeroesViewModel)

@@ -50,6 +50,7 @@ fun HeroesScreen(
 
         is HeroesUiState.Success -> {
             HeroGrid(
+                modifier = modifier,
                 heroes = state.heroes,
                 onHeroClick = onHeroClick
             )
@@ -93,7 +94,6 @@ fun HeroGrid(
                 item(span = { GridItemSpan(maxLineSpan) }) {
                     SectionHeader(
                         role = role.value,
-                        modifier = Modifier.padding(8.dp)
                     )
                 }
 
@@ -118,7 +118,7 @@ fun SectionHeader(
         style = MaterialTheme.typography.displayMedium,
         fontWeight = FontWeight.Bold,
         color = Color.White,
-        modifier = modifier.padding(top = 8.dp)
+        modifier = modifier.padding(top = 8.dp, start = 8.dp)
     )
 }
 
